@@ -55,12 +55,12 @@ class Quote(Base):
             return old_date_to_string(self.date)
 
     def to_tweet_string(self):
-        return ''.join(['« ',
+        return ''.join([u'« ',
                         self.content,
-                        '» ',
-                        ' (',
+                        u'» ',
+                        u' (',
                         self.author.name,
-                        ')'])
+                        u')'])
 
 
 def old_date_to_string(date):
