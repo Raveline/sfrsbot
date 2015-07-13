@@ -11,8 +11,8 @@ from utils import create_db, random_quote, connect_sql
 def random_and_print():
     session = connect_sql()
     quote = random_quote(session)
-    session.close()
     print(quote.to_tweet_string())
+    session.close()
 
 
 def main():
