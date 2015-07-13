@@ -23,11 +23,11 @@ def add_line(session, line):
         return
     quote = content[0].strip('"')
     author = content[1]
-    quote_date = datetime.datetime.strptime(content[2], '%d %B %Y')
+    quote_date = datetime.datetime.strptime(content[2].strip(), '%d %B %Y')
     try:
         author = get_or_create_author(session, author)
         quote = Quote(author=author, content=quote, date=quote_date)
-        session.save(quote)
+        session.add(quote)
         session.commit()
     except Exception as exc:
         session.rollback()
@@ -41,6 +41,6 @@ def get_or_create_author(session, author):
         return result
     except NoResultFound:
         author = Author(name=author)
-        session.save(author)
+        session.add(author)
         session.commit()
         return author
