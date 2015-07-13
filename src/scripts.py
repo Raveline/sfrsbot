@@ -17,7 +17,7 @@ def feed(csv):
 
 
 def add_line(session, line):
-    content = line.split(';')
+    content = line.split('\t')
     if len(content) != 3:
         print("Could not parse line : %s" % line)
         return
