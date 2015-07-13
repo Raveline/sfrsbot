@@ -11,19 +11,19 @@ class BotDaemon(object):
     MAX_TWEETS_PER_HOUR = 20
 
     def __init__(self):
-        self.flags = {self.MORNING: False,
-                      self.NOON: False,
-                      self.AFTERNOON: False,
-                      self.EVENING: False}
+        self.flags = {self.MORNING: True,
+                      self.NOON: True,
+                      self.AFTERNOON: True,
+                      self.EVENING: True}
         self.previous_hour_posting = -1
         self.posted_message_last_hour = 0
 
     def reset_flags(self):
         for f in self.flags:
-            self.flags[f] = False
+            self.flags[f] = True
 
     def should_i_tweet_now(self, hour):
-        return self.flags.get(hour, True)
+        return self.flags.get(hour, False)
 
     def reset_hour(self, new_hour):
         self.previous_hour_posting = new_hour
@@ -47,6 +47,8 @@ class BotDaemon(object):
 
         if self.should_i_tweet_now(hour):
             self.post_random_tweet()
+            # Now that it's done, let's put it as false !
+            self.flags[hour] = False
         elif self.posted_message_last_hour < self.MAX_TWEETS_PER_HOUR:
             self.check_interaction()
 
@@ -62,9 +64,6 @@ class BotDaemon(object):
         tweet(quote.to_tweet_string())
 
     def check_interaction(self):
-        pass
-
-    def tweet(self):
         pass
 
 
