@@ -57,7 +57,7 @@ class Quote(Base):
     def to_tweet_string(self):
         return ''.join([u'« ',
                         self.content,
-                        u'» ',
+                        u' » ',
                         u' (',
                         self.author.name,
                         u')'])
