@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import random
 
 from twitter import Twitter, OAuth
 from model import Quote, Base
@@ -20,9 +21,14 @@ def connect_sql():
 
 def random_quote(session):
     try:
-        result = session.query(Quote).filter_by(used=False).\
-            filter_by(func.random() > 0.1).limit(1).first()
-    except Exception:
+        # There are obviously better ways of handling this.
+        # But this is supposed to scale well up to the ~500Ks.
+        # And let's face it, we'll NEVER get to this point.
+        # So... let's use this.
+        q = session.query(Quote).filter(Quote.used==False)
+        count = int(q.count())
+        result = q.offset(int(count*random.random())).first()
+    except Exception as exc:
         raise NoMoreQuotesException('Ran out of quotes !')
     return result
 
