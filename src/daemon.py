@@ -56,7 +56,7 @@ class BotDaemon(object):
             self.check_interaction()
 
         # Sleep for 10 minutes
-        time.sleep(600)
+        time.sleep(60)
 
     def post_random_tweet(self):
         session = connect_sql()
@@ -82,13 +82,14 @@ class BotDaemon(object):
     def check_interaction(self):
         interactions = get_mention_timeline(self.last_poll)
         for i in interactions:
-            txt = t.text.lower()
-            if t.text.lower().find('quand'):
+            txt = i['text'].lower()
+            if txt.find('quand'):
                 date_to_answer = answer_when(i['in_reply_to_status_id'])
                 if date_to_answer:
                     full_tweet = '@%s: %s' % (i['user']['screen_name'],
                                               date_to_answer)
                     tweet_answer(full_tweet, i['id'])
+                    self.posted_message_last_hour += 1
         self.last_poll = datetime.datetime.utcnow()
 
 
