@@ -15,10 +15,10 @@ Base = declarative_base()
 
 REV_CALENDAR_BEGIN = datetime.date(1792, 9, 22)
 REV_CALENDAR_END = datetime.date(1806, 1, 1)
-MONTHS = ["janvier", "février", "mars",
-          "avril", "mai", "juin",
-          "juillet", "août", "septembre",
-          "octobre", "novembre", "décembre"]
+MONTHS = [u"janvier", u"février", u"mars",
+          u"avril", u"mai", u"juin",
+          u"juillet", u"août", u"septembre",
+          u"octobre", u"novembre", u"décembre"]
 
 
 class Author(Base):
@@ -49,8 +49,8 @@ class Quote(Base):
         display it thusly. Else, display it in the more classical way."""
         if self.date >= REV_CALENDAR_BEGIN and self.date <= REV_CALENDAR_END:
             # During revolutionary calendar : return the date in this format
-            d = french_republican.from_gregorian()
-            return french_republican.format(d.year, d.month, d.day)
+            d = french_republican.from_gregorian(self.date.year, self.date.month, self.date.day)
+            return french_republican.format(*d)
         else:
             return old_date_to_string(self.date)
 
@@ -70,4 +70,4 @@ def old_date_to_string(date):
     if d == 1:
         d = "1er"
     m = MONTHS[date.month]
-    return "%s %s %s" % (d, m, date.year())
+    return u"%s %s %s" % (d, m, date.year)
