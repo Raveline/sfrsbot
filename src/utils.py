@@ -48,7 +48,7 @@ def tweet(txt):
 
 def tweet_answer(txt, reply_to):
     conn = twitter_connect()
-    conn.statuses.update(txt, in_reply_to_status_id=reply_to)
+    conn.statuses.update(status=txt, in_reply_to_status_id=reply_to)
 
 
 def get_tweet_by_id(tweet_id):
