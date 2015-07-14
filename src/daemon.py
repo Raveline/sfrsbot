@@ -43,7 +43,7 @@ class BotDaemon(object):
                 # Yup. We came from 23 to 0.
                 self.reset_flags()
             # In any case, reset the tweets / hour limit
-            self.previous_hour_posting()
+            self.previous_hour_posting = hour
 
         if self.should_i_tweet_now(hour):
             self.post_random_tweet()
@@ -60,8 +60,8 @@ class BotDaemon(object):
         quote = random_quote(session)
         quote.used = True
         session.commit()
-        session.close()
         tweet(quote.to_tweet_string())
+        session.close()
 
     def check_interaction(self):
         pass
