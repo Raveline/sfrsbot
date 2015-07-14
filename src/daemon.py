@@ -1,7 +1,10 @@
 # *-* coding:utf-8 *-*
 import datetime
 import time
-from utils import random_quote, connect_sql, tweet, get_mention_timeline, get_tweet_by_id
+from utils import (
+    random_quote, connect_sql, tweet, get_mention_timeline,
+    get_tweet_by_id, tweet_answer)
+from model import Quote
 
 
 class BotDaemon(object):
@@ -18,8 +21,10 @@ class BotDaemon(object):
                       self.EVENING: True}
         self.previous_hour_posting = -1
         self.posted_message_last_hour = 0
-        if last_poll is None:
-            self.last_poll = datetime.datetime.utcnow()
+        self.last_poll = datetime.datetime.utcnow()
+        if last_poll is not None:
+            timedelta = datetime.timedelta(minutes=last_poll)
+            self.last_poll = datetime.datetime.utcnow() - timedelta
 
     def reset_flags(self):
         for f in self.flags:
@@ -56,7 +61,7 @@ class BotDaemon(object):
             self.check_interaction()
 
         # Sleep for 10 minutes
-        time.sleep(60)
+        time.sleep(600)
 
     def post_random_tweet(self):
         session = connect_sql()
@@ -67,13 +72,16 @@ class BotDaemon(object):
         session.close()
 
     def answer_when(self, tweet_id):
-        q_tweet = get_tweet_by_id(original_tweet_id)
-        quote = q_tweet[q_tweet.find('«'):q_tweet.find('»')].strip()
+        q_tweet = get_tweet_by_id(tweet_id)
+        quote = q_tweet[q_tweet.find(u'«')+1:q_tweet.find(u'»')].strip()
         session = connect_sql()
         try:
+            logging.info("Looking for quote %s" % quote)
             quote= session.query(Quote).filter_by(content=quote).one()
             answer = quote.to_date_string()
-        except Exception:
+            logging.info("Found it !  %s" % answer)
+        except Exception as exc:
+            logging.error("Could not find it. Error : %s" % exc)
             answer = None
         finally:
             session.close()
@@ -83,6 +91,7 @@ class BotDaemon(object):
         interactions = get_mention_timeline(self.last_poll)
         for i in interactions:
             txt = i['text'].lower()
+            logging.info('Received tweet ! %s' % txt)
             if txt.find('quand'):
                 date_to_answer = self.answer_when(i['in_reply_to_status_id'])
                 if date_to_answer:
