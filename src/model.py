@@ -43,7 +43,7 @@ class Quote(Base):
                           primaryjoin="Quote.author_id == Author.author_id",
                           backref=backref("quotes"))
 
-    def to_date(self):
+    def to_date_string(self):
         """Given the quote, returns the date in a printable, french format.
         If the date is during the french revolutionary calendar usage time,
         display it thusly. Else, display it in the more classical way."""
