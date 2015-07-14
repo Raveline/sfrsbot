@@ -10,13 +10,15 @@ class BotDaemon(object):
     EVENING = 21
     MAX_TWEETS_PER_HOUR = 20
 
-    def __init__(self):
+    def __init__(self, last_poll=None):
         self.flags = {self.MORNING: True,
                       self.NOON: True,
                       self.AFTERNOON: True,
                       self.EVENING: True}
         self.previous_hour_posting = -1
         self.posted_message_last_hour = 0
+        if last_poll is None:
+            self.last_poll = datetime.datetime.utcnow()
 
     def reset_flags(self):
         for f in self.flags:
@@ -63,8 +65,30 @@ class BotDaemon(object):
         tweet(quote.to_tweet_string())
         session.close()
 
+    def answer_when(self, tweet_id):
+        q_tweet = get_tweet_by_idr(original_tweet_id)
+        quote = q_tweet[q_tweet.find('«'):q_tweet.find('»')].strip()
+        session = connect_sql()
+        try:
+            quote= session.query(Quote).filter_by(content=quote).one()
+            answer = quote.to_date_string()
+        except Exception:
+            answer = None
+        finally:
+            session.close()
+        return answer
+
     def check_interaction(self):
-        pass
+        interactions = get_mention_timeline(self.last_poll)
+        for i in interactions:
+            txt = t.text.lower()
+            if t.text.lower().find('quand'):
+                date_to_answer = answer_when(i['in_reply_to_status_id'])
+                if date_to_answer:
+                    full_tweet = '@%s: %s' % (i['user']['screen_name'],
+                                              date_to_answer)
+                    tweet_answer(full_tweet, i['id'])
+        self.last_poll = datetime.datetime.utcnow()
 
 
 def run_daemon():
