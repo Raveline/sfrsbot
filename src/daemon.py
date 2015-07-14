@@ -84,7 +84,7 @@ class BotDaemon(object):
         for i in interactions:
             txt = i['text'].lower()
             if txt.find('quand'):
-                date_to_answer = answer_when(i['in_reply_to_status_id'])
+                date_to_answer = self.answer_when(i['in_reply_to_status_id'])
                 if date_to_answer:
                     full_tweet = '@%s: %s' % (i['user']['screen_name'],
                                               date_to_answer)
