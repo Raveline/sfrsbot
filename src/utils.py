@@ -51,7 +51,7 @@ def tweet_answer(txt, reply_to):
     conn.statuses.update(txt, in_reply_to_status_id=reply_to)
 
 
-def get_tweet_by_id(txt, tweet_id):
+def get_tweet_by_id(tweet_id):
     conn = twitter_connect()
     return conn.statuses.show(id=tweet_id)['text']
 
