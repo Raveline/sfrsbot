@@ -45,6 +45,27 @@ def tweet(txt):
     conn.statuses.update(status=txt)
 
 
+def tweet_answer(txt, reply_to):
+    conn = twitter_connect()
+    conn.statuses.update(txt, in_reply_to_status_id=reply_to)
+
+
+def get_tweet_by_id(txt, tweet_id):
+    conn = twitter_connect()
+    return conn.statuses.show(id=tweet_id)['text']
+
+
+def check_interaction(self, last_poll_time):
+    def legit_tweet(t):
+        tweet_time = dateutil.parser.parse(t['created_at'], ignoretz=True)
+        return (t['in_reply_to_screen_name'] == Config.screen_name
+                and tweet_time > last_poll_time)
+
+    conn = twitter_connect()
+    timeline = conn.statuses.mentions_timeline()
+    return [t for t in timeline if legit_tweet(t)]
+
+
 def create_db():
     engine = create_engine(Config.PostgreURI)
     Base.metadata.create_all(engine)
