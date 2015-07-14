@@ -1,7 +1,7 @@
 # *-* coding:utf-8 *-*
 import datetime
 import time
-from utils import random_quote, connect_sql, tweet, get_mention_timeline
+from utils import random_quote, connect_sql, tweet, get_mention_timeline, get_tweet_by_id
 
 
 class BotDaemon(object):
@@ -67,7 +67,7 @@ class BotDaemon(object):
         session.close()
 
     def answer_when(self, tweet_id):
-        q_tweet = get_tweet_by_idr(original_tweet_id)
+        q_tweet = get_tweet_by_id(original_tweet_id)
         quote = q_tweet[q_tweet.find('«'):q_tweet.find('»')].strip()
         session = connect_sql()
         try:
