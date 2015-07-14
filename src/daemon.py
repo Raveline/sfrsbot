@@ -1,3 +1,4 @@
+# *-* coding:utf-8 *-*
 import datetime
 import time
 from utils import random_quote, connect_sql, tweet
