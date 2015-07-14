@@ -55,7 +55,7 @@ def get_tweet_by_id(txt, tweet_id):
     return conn.statuses.show(id=tweet_id)['text']
 
 
-def get_mention_timeline(self, last_poll_time):
+def get_mention_timeline(last_poll_time):
     def legit_tweet(t):
         tweet_time = dateutil.parser.parse(t['created_at'], ignoretz=True)
         return (t['in_reply_to_screen_name'] == Config.screen_name
