@@ -1,5 +1,6 @@
 # *-* coding:utf-8 *-*
 import datetime
+import logging
 import time
 from utils import (
     random_quote, connect_sql, tweet, get_mention_timeline,
