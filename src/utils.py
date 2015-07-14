@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import random
+import dateutil.parser
 
 from twitter import Twitter, OAuth
 from model import Quote, Base
