@@ -89,7 +89,10 @@ class BotDaemon(object):
         return answer
 
     def check_interaction(self):
-        interactions = get_mention_timeline(self.last_poll)
+        try:
+            interactions = get_mention_timeline(self.last_poll)
+        except Exception:
+            return
         for i in interactions:
             txt = i['text'].lower()
             logging.info('Received tweet ! %s' % txt)
