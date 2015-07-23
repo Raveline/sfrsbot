@@ -69,8 +69,12 @@ class BotDaemon(object):
         quote = random_quote(session)
         quote.used = True
         session.commit()
-        tweet(quote.to_tweet_string())
-        session.close()
+        try:
+            tweet(quote.to_tweet_string())
+        except:
+            logging.error("Could not tweet : %s, too long." % quote.to_tweet_string())
+        finally:
+            session.close()
 
     def answer_when(self, tweet_id):
         q_tweet = get_tweet_by_id(tweet_id)
